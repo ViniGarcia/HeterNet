@@ -1,0 +1,49 @@
+TOPOLOGY:
+  - F1
+  - F2
+  - F3
+  - "< 0 >"             #DEFINING A DOMAIN DEPENDENCY FOR F3
+  - F4
+  - "@ EDGE @"          #DEFINING A TYPE DEPENDENCY FOR F4
+  - "! TACKER !"        #DEFININF A ORCHESTRATOR DEPENDENCY FOR F4
+  - F5
+  - F6
+DOMAINS:
+  '0':
+    COST: 10.0 
+    ORCH: ["TACKER"]
+    TYPE: "EDGE"
+    TRANSITION:
+      '1':
+        LAT: 100.0
+        BDW: 10000.0
+      '2':
+        LAT: 250.0
+        BDW: 20000.0
+  '1':
+    COST: 5.0
+    ORCH: ["TACKER", "VINES", "OSM"]
+    TYPE: "CLOUD"
+    TRANSITION:
+      '0':
+        LAT: 100.0
+        BDW: 10000.0
+      '2':
+        LAT: 300.0
+        BDW: 20000.0
+  '2':
+    COST: 25.0
+    ORCH: ["TACKER", "VINES", "OSM"]
+    TYPE: "EDGE"
+    TRANSITION:
+      '0':
+        LAT: 250.0
+        BDW: 20000.0
+      '2':
+        LAT: 300.0
+        BDW: 20000.0
+REQUIREMENTS:           #ALLOWS >, >=, <, <=, ==, != REQUIREMENTS
+  COST: ["<= 100"]
+  LAT: ["< 350"]
+  BDW: [">= 10000"]
+
