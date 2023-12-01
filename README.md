@@ -1,2 +1,2 @@
 # HeterNet
-Heterogeneous Networks Deployment
+Deployment in Heterogeneous Networks
