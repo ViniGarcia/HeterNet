@@ -24,17 +24,17 @@ import local_platypus
 
 class Generator(local_platypus.Generator):
 
-	self.__dependencies = None
+	__dependencies = None
 
-    def __init__(self, request):
-        super(Generator, self).__init__()
-        #adjust here
+	def __init__(self, request):
+		super(Generator, self).__init__()
+		#adjust here
 
-    def generate(self, problem):
-        solution = Solution(problem)
-        solution.variables = [x.rand() for x in problem.types]
-        #adjust here
-        return solution
+	def generate(self, problem):
+		solution = Solution(problem)
+		solution.variables = [x.rand() for x in problem.types]
+		#adjust here
+		return solution
 
 ###############################################
 
@@ -85,7 +85,7 @@ class Problem(local_platypus.Problem):
 				index += 1
 
 		self.__domains = request["DOMAINS"].items()
-		self.__penalty = [Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MIN_VALUE]
+		self.__penalty = [float('inf'), float('inf'), float('-inf')]
 
 	def __init__(self, request):
 
@@ -116,7 +116,7 @@ class Problem(local_platypus.Problem):
 					solution.constraints[:] = [0 for i in range(len(self.__constraints))]
 					solution.objectives[:] = self.__penalty
 					return
-			else if self.__service[self.__indexed_service[allele]][2] != None:
+			elif self.__service[self.__indexed_service[allele]][2] != None:
 				if not self.__service[self.__indexed_service[allele]][1] in self.__domains[genome[allele]][1]["ORCH"]:
 					solution.constraints[:] = [0 for i in range(len(self.__constraints))]
 					solution.objectives[:] = self.__penalty
