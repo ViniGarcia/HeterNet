@@ -117,6 +117,7 @@ class Problem(local_platypus.Problem):
 
 	__domains_translator = None
 	__service_translator = None
+	__integer_translator = None
 
 	def __prepare(self, request):
 
@@ -141,6 +142,7 @@ class Problem(local_platypus.Problem):
 
 		self.__service_translator = Translator.Translator(indexed_service)
 		self.__domains_translator = Translator.Translator({i:self.__domains[i][0] for i in range(len(self.__domains))})
+		self.__integer_translator = local_platypus.Integer(0, len(self.__domains)-1)
 
 	def __init__(self, request):
 
@@ -162,29 +164,40 @@ class Problem(local_platypus.Problem):
 		total_cost = 0
 
 		previous_domain = -1
-		for allele in range(len(genome)):
+		for gene in range(len(genome)):
 			
-			if self.__service[self.__service_translator.from_to(allele)][1] != None:
-				if self.__service[self.__service_translator.from_to(allele)][1] != self.__domains[genome[allele]][1]["TYPE"]:
-					solution.constraints[:] = [0 for i in range(len(self.__constraints))]
-					solution.objectives[:] = self.__penalty
-					return
-			elif self.__service[self.__service_translator.from_to(allele)][2] != None:
-				if not self.__service[self.__service_translator.from_to(allele)][1] in self.__domains[genome[allele]][1]["ORCH"]:
-					solution.constraints[:] = [0 for i in range(len(self.__constraints))]
-					solution.objectives[:] = self.__penalty
-					return
-			#analisar se as transições são válidas
+			allele = self.__integer_translator.decode(genome[gene])
 
-			evaluation[0] += self.__domains[genome[allele]][1]["COST"]
-			if previous_function != genome[allele]:
-				evaluation[1] += self.__domains[genome[allele]][1][previous_domain]["LAT"]
-				evaluation[2] += self.__domains[genome[allele]][1][previous_domain]["BDW"]
-			previous_function = genome[allele]
+			if self.__service[self.__service_translator.from_to(gene)][1] != None:
+				if self.__service[self.__service_translator.from_to(gene)][1] != self.__domains[allele][1]["TYPE"]:
+					solution.constraints = [0 for i in range(sum(self.__constraints))] + [0]
+					solution.objectives[:] = self.__penalty
+					solution.evaluated = True
+					return
+			if self.__service[self.__service_translator.from_to(gene)][2] != None:
+				if not self.__service[self.__service_translator.from_to(gene)][1] in self.__domains[allele][1]["ORCH"]:
+					solution.constraints = [0 for i in range(sum(self.__constraints))] + [0]
+					solution.objectives[:] = self.__penalty
+					solution.evaluated = True
+					return
 
-		solution.constraints[:] = [evaluation[0] for i in range(self.__constraints[0])] + [evaluation[1] for i in range(self.__constraints[1])] + [evaluation[2] for i in range(self.__constraints[2])] + [1]
+			evaluation[0] += self.__domains[allele][1]["COST"]
+			if previous_domain != allele:
+
+				if not self.__domains_translator.from_to(allele) in self.__domains[previous_domain][1]["TRANSITION"]:
+					solution.constraints = [0 for i in range(sum(self.__constraints))] + [0]
+					solution.objectives[:] = self.__penalty
+					solution.evaluated = True
+					return
+
+				evaluation[1] += self.__domains[previous_domain][1]["TRANSITION"][self.__domains_translator.from_to(allele)]["LAT"]
+				evaluation[2] += self.__domains[previous_domain][1]["TRANSITION"][self.__domains_translator.from_to(allele)]["BDW"]
+
+			previous_domain = allele
+
+		solution.constraints = [evaluation[0] for i in range(self.__constraints[0])] + [evaluation[1] for i in range(self.__constraints[1])] + [evaluation[2] for i in range(self.__constraints[2])] + [1]
 		solution.objectives[:] = evaluation
-
+		solution.evaluated = True
 	
 	def get_translated_dependencies(self):
 		
@@ -212,6 +225,9 @@ class Problem(local_platypus.Problem):
 
 	def get_constraints(self):
 		return self.__constraints
+
+	def get_integer_translator(self):
+		return self.__integer_translator
 
 ###############################################
 
@@ -254,4 +270,16 @@ class Mapping:
 		self.__mutator = Mutator(probability = float(mutation_rate), dependencies = self.__problem.get_translated_dependencies())
 		self.__algorithm = local_platypus.NSGAII(self.__problem, population_size = population_size, generator = self.__generator, selector = self.__selector, variator = local_platypus.operators.GAOperator(self.__crossover, self.__mutator))
 
-		#falta analisar se as transições são validas
+		
+		#### HÁ UM BUG NO CÁLCULO DAS MÉTRICAS DE TRANSIÇÃO
+
+		candidate = self.__generator.generate(self.__problem)
+		self.__problem.evaluate(candidate)
+
+		int_trans = self.__problem.get_integer_translator()
+		dom_trans = self.__problem.get_domains_translator()
+
+		for i in candidate.variables[:]:
+			print(dom_trans.from_to(int_trans.decode(i)))
+		print(candidate.constraints)
+		print(candidate.objectives)

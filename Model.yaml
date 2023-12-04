@@ -2,10 +2,7 @@ TOPOLOGY:
   - F1
   - F2
   - F3
-  - "< 0 >"             #DEFINING A DOMAIN DEPENDENCY FOR F3
   - F4
-  - "@ EDGE @"          #DEFINING A TYPE DEPENDENCY FOR F4
-  - "! TACKER !"        #DEFININF A ORCHESTRATOR DEPENDENCY FOR F4
   - F5
   - F6
 DOMAINS:
