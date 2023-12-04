@@ -16,6 +16,6 @@ import Validator
 import Genetic
 
 teste = Validator.Validator("Model.yaml")
-test2 = Genetic.Mapping(teste.get_yaml_data(), 30, 0.5, 0.1)
+test2 = Genetic.Mapping(teste.get_yaml_data(), 30, 0.5, 1.0)
 
 ###############################################
