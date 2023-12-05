@@ -148,25 +148,24 @@ class Problem(local_platypus.Problem):
 
 		self.__prepare(request)
 
-		super(Problem, self).__init__(len(self.__service), 3, len(request["REQUIREMENTS"]["COST"]) + len(request["REQUIREMENTS"]["LAT"]) + len(request["REQUIREMENTS"]["BDW"]))
+		super(Problem, self).__init__(len(self.__service), 3, len(request["REQUIREMENTS"]["COST"]) + len(request["REQUIREMENTS"]["LAT"]) + len(request["REQUIREMENTS"]["BDW"]) + 1)
 		self.types[:] = [local_platypus.Integer(0, len(request["DOMAINS"])-1)] * len(self.__service)
 		self.directions[:] = [local_platypus.Problem.MINIMIZE, local_platypus.Problem.MINIMIZE, local_platypus.Problem.MAXIMIZE]
-		self.constraints[:] = [i.replace(" ", "") for i in request["REQUIREMENTS"]["COST"] + request["REQUIREMENTS"]["LAT"] + request["REQUIREMENTS"]["BDW"]] + ["==1"]
-		
+		self.constraints[:] = [i.replace(" ", "") for i in (request["REQUIREMENTS"]["COST"] + request["REQUIREMENTS"]["LAT"] + request["REQUIREMENTS"]["BDW"])] + ["==1"]
 
 	def evaluate(self, solution):
 
-		genome = solution.variables[:]
+		genome = solution.variables
 		evaluation = [0,0,0]
 
 		total_latency = 0
 		total_bandwidth = 0
 		total_cost = 0
 
-		previous_domain = -1
+		previous_domain = genome[0]
 		for gene in range(len(genome)):
 			
-			allele = self.__integer_translator.decode(genome[gene])
+			allele = genome[gene]
 
 			if self.__service[self.__service_translator.from_to(gene)][1] != None:
 				if self.__service[self.__service_translator.from_to(gene)][1] != self.__domains[allele][1]["TYPE"]:
@@ -194,7 +193,7 @@ class Problem(local_platypus.Problem):
 				evaluation[2] += self.__domains[previous_domain][1]["TRANSITION"][self.__domains_translator.from_to(allele)]["BDW"]
 
 			previous_domain = allele
-
+		
 		solution.constraints = [evaluation[0] for i in range(self.__constraints[0])] + [evaluation[1] for i in range(self.__constraints[1])] + [evaluation[2] for i in range(self.__constraints[2])] + [1]
 		solution.objectives[:] = evaluation
 		solution.evaluated = True
@@ -258,9 +257,44 @@ class Mapping:
 	__crossover = None
 	__mutator = None 
 	__algorithm = None
-	
+	__status = None
 
 	def __init__(self, request, population_size, crossover_rate, mutation_rate):
+
+		if not isinstance(request, dict):
+			self.__status = -1
+			return
+
+		try:
+			population_size = int(population_size)
+		except:
+			self.__status = -2
+			return
+
+		try:
+			crossover_rate = float(crossover_rate)
+		except:
+			self.__status = -3
+			return
+
+		try:
+			mutation_rate = float(mutation_rate)
+		except:
+			self.__status = -4
+			return
+
+		if population_size < 2:
+			self.__status = -5
+			return
+
+		if crossover_rate < 0 or crossover_rate > 1:
+			self.__status = -6
+			return
+
+		if mutation_rate < 0 or mutation_rate > 1:
+			self.__status = -7
+			return
+
 
 		self.__request = request
 		self.__problem = Problem(self.__request)
@@ -270,16 +304,27 @@ class Mapping:
 		self.__mutator = Mutator(probability = float(mutation_rate), dependencies = self.__problem.get_translated_dependencies())
 		self.__algorithm = local_platypus.NSGAII(self.__problem, population_size = population_size, generator = self.__generator, selector = self.__selector, variator = local_platypus.operators.GAOperator(self.__crossover, self.__mutator))
 
-		
-		#### HÁ UM BUG NO CÁLCULO DAS MÉTRICAS DE TRANSIÇÃO
+		self.__status = 1
 
-		candidate = self.__generator.generate(self.__problem)
-		self.__problem.evaluate(candidate)
 
-		int_trans = self.__problem.get_integer_translator()
-		dom_trans = self.__problem.get_domains_translator()
+	def inject_population(self):
+		pass
 
-		for i in candidate.variables[:]:
-			print(dom_trans.from_to(int_trans.decode(i)))
-		print(candidate.constraints)
-		print(candidate.objectives)
+
+	def execute_generations(self, generations):
+
+		if self.__status != 1:
+			return
+
+		self.__algorithm.run(generations)
+		pareto_front = local_platypus.nondominated(self.__algorithm.result)
+
+		for candidate in pareto_front:
+			print(candidate)
+
+	def execute_time(self):
+		pass
+
+
+	def get_status(self):
+		return self.__status
