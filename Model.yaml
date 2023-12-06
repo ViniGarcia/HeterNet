@@ -41,6 +41,6 @@ DOMAINS:
         BDW: 20000.0
 REQUIREMENTS:           #ALLOWS >, >=, <, <=, ==, != REQUIREMENTS
   COST: ["<= 100"]
-  LAT: ["< 350"]
+  LAT: ["< 550"]
   BDW: [">= 10000"]
 

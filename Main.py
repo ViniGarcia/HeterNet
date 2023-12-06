@@ -17,6 +17,8 @@ import Genetic
 
 teste = Validator.Validator("Model.yaml")
 test2 = Genetic.Mapping(teste.get_yaml_data(), 30, 0, 0)
-test2.execute_generations(1)
+res = test2.execute_generations(1)
+for candidate in res:
+	print(candidate, "\n")
 
 ###############################################

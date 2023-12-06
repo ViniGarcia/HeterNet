@@ -60,33 +60,37 @@ class Mutator(local_platypus.Mutation):
 #CREATED BY: VINICIUS FULBER GARCIA
 #CONTACT: vinicius@inf.ufpr.br
 
-#RECEIVES A VALIDATED REQUEST AND ESTABLI-
-#SHES THE REQUIRED DOMAIN DEPENDENCIES FOR
-#KEEPING INDIVIDUALS VALID DURING THE OP-
-#TIMIZATION PROCESS.
+#RECEIVES A SET OF DEPENDENCIES TO BE 
+#CONSIDERED WHEN GENERATING NEW CANDI-
+#DATES TO SOLVE THE OPTIMIZATION PRO-
+#BLEM. IT CAN ALSO RECEIVE A PREDEFI-
+#NED POPULATION TO BE INJECTED IN A
+#GENERATED POPULATION.
 
 #IT ALSO DEFINES A SIMPLE ROUTINE FOR GE-
 #NERATING RANDOM VALID INDIVIDUALS.
 
-###############################################
-
 class Generator(local_platypus.Generator):
 
-	def __init__(self, dependencies = {}):
+	def __init__(self, dependencies = {}, solutions = []):
 		super(Generator, self).__init__()
 		self.dependencies = dependencies
+		self.solutions = solutions
+
+		for solution in solutions:
+			self.solutions.append(copy.deepcopy(solution))
 
 	def generate(self, problem):
-		solution = local_platypus.Solution(problem)
-		solution.variables = [x.rand() for x in problem.types]
+		if len(self.solutions) > 0:
+			return self.solutions.pop()
+		else:
+			solution = local_platypus.Solution(problem)
+			solution.variables = [x.rand() for x in problem.types]
 
-		for i in self.dependencies:
-			solution.variables[i] = problem.types[i].encode(self.dependencies[i])
+			for i in self.dependencies:
+				solution.variables[i] = problem.types[i].encode(self.dependencies[i])
 
-		return solution
-
-###############################################
-
+			return solution
 
 ######### PROBLEM CLASS DESCRIPTION ###########
 
@@ -117,7 +121,6 @@ class Problem(local_platypus.Problem):
 
 	__domains_translator = None
 	__service_translator = None
-	__integer_translator = None
 
 	def __prepare(self, request):
 
@@ -142,7 +145,6 @@ class Problem(local_platypus.Problem):
 
 		self.__service_translator = Translator.Translator(indexed_service)
 		self.__domains_translator = Translator.Translator({i:self.__domains[i][0] for i in range(len(self.__domains))})
-		self.__integer_translator = local_platypus.Integer(0, len(self.__domains)-1)
 
 	def __init__(self, request):
 
@@ -188,6 +190,11 @@ class Problem(local_platypus.Problem):
 					solution.objectives[:] = self.__penalty
 					solution.evaluated = True
 					return
+
+				#== Tunneling costs ==
+				evaluation[0] += self.__domains[previous_domain][1]["COST"]
+				evaluation[0] += self.__domains[allele][1]["COST"]
+				#=====================
 
 				evaluation[1] += self.__domains[previous_domain][1]["TRANSITION"][self.__domains_translator.from_to(allele)]["LAT"]
 				evaluation[2] += self.__domains[previous_domain][1]["TRANSITION"][self.__domains_translator.from_to(allele)]["BDW"]
@@ -259,8 +266,30 @@ class Mapping:
 	__algorithm = None
 	__status = None
 
+	def __format_pareto(self):
+
+		formatted_pareto = []
+		service = self.__problem.get_service_translator()
+		domains = self.__problem.get_domains_translator()
+		translator = local_platypus.Integer(0, len(self.__problem.get_domains())-1)
+		
+		for candidate in local_platypus.nondominated(self.__algorithm.result):
+			deploy_map = [(service.from_to(0), domains.from_to(translator.decode(candidate.variables[0])))]
+			for index in range(1, len(candidate.variables)):
+				if candidate.variables[index-1] != candidate.variables[index]:
+					deploy_map += [("TF", domains.from_to(translator.decode(candidate.variables[index-1]))), ("TF", domains.from_to(translator.decode(candidate.variables[index])))]
+				deploy_map.append((service.from_to(index), domains.from_to(translator.decode(candidate.variables[index]))))
+			formatted_pareto.append({"MAP": deploy_map, "RESULT":{"COST":candidate.objectives[0], "LAT":candidate.objectives[1], "BDW":candidate.objectives[2]}})
+
+		return formatted_pareto
+
 	def __init__(self, request, population_size, crossover_rate, mutation_rate):
 
+		self.deployment_setup(request, population_size, crossover_rate, mutation_rate)
+
+
+	def deployment_setup(self, request, population_size, crossover_rate, mutation_rate, input_population = []):
+		
 		if not isinstance(request, dict):
 			self.__status = -1
 			return
@@ -295,10 +324,19 @@ class Mapping:
 			self.__status = -7
 			return
 
+		if not isinstance(input_population, list):
+			self.__status = -8
+			return
+
+		for candidate in input_population:
+			if not isinstance(candidate, local_platypus.Solution):
+				self.__status = -9
+				return
+			candidate.evaluated = False
 
 		self.__request = request
 		self.__problem = Problem(self.__request)
-		self.__generator = Generator(dependencies = self.__problem.get_translated_dependencies())
+		self.__generator = Generator(dependencies = self.__problem.get_translated_dependencies(), solutions = input_population)
 		self.__selector = local_platypus.operators.TournamentSelector()
 		self.__crossover = local_platypus.operators.SBX(probability = float(crossover_rate))
 		self.__mutator = Mutator(probability = float(mutation_rate), dependencies = self.__problem.get_translated_dependencies())
@@ -307,23 +345,29 @@ class Mapping:
 		self.__status = 1
 
 
-	def inject_population(self):
-		pass
-
-
 	def execute_generations(self, generations):
 
 		if self.__status != 1:
-			return
+			return -10
+
+		if not isinstance(generations, int) or generations < 1:
+			return -11
 
 		self.__algorithm.run(generations)
-		pareto_front = local_platypus.nondominated(self.__algorithm.result)
 
-		for candidate in pareto_front:
-			print(candidate)
+		return self.__format_pareto()
 
-	def execute_time(self):
-		pass
+
+	def execute_time(self, seconds):
+	
+		if self.__status != 1:
+			return -10
+
+		if not isinstance(seconds, int) or seconds < 1:
+			return -12
+
+		self.__algorithm.run(local_platypus.MaxTime(seconds))
+		return self.__format_pareto()
 
 
 	def get_status(self):
