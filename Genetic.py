@@ -1,6 +1,7 @@
 
 ################ COMMON IMPORTS ###############
 
+import time
 import copy
 import random
 import local_platypus
@@ -244,12 +245,17 @@ class Problem(local_platypus.Problem):
 #CREATED BY: VINICIUS FULBER GARCIA
 #CONTACT: vinicius@inf.ufpr.br
 
-#
+#AN ORGANIZATION CLASS TO ALLOCATE ALL THE
+#REQUIRED RESOURCES FOR EXECUTING THE GENE-
+#TIC ALGORITHM. THE SAME SETUP CAN BE USED
+#FOR EXECUTING DEPLOYMENT AND REDEPLOYMENT
+#OPERATIONS.
 
 #THE CODE ATTRIBUTE INDICATE ITS OPERATIONS
 #RESULTS CODES:
 
 #NORMAL CODES ->
+#1 -> READY TO EXECUTE
 
 #ERROR CODES ->
 
@@ -282,6 +288,7 @@ class Mapping:
 			formatted_pareto.append({"MAP": deploy_map, "RESULT":{"COST":candidate.objectives[0], "LAT":candidate.objectives[1], "BDW":candidate.objectives[2]}})
 
 		return formatted_pareto
+
 
 	def __init__(self, request, population_size, crossover_rate, mutation_rate):
 
@@ -353,6 +360,7 @@ class Mapping:
 		if not isinstance(generations, int) or generations < 1:
 			return -11
 
+		self.__algorithm.nfe = False
 		self.__algorithm.run(generations)
 
 		return self.__format_pareto()
@@ -366,9 +374,41 @@ class Mapping:
 		if not isinstance(seconds, int) or seconds < 1:
 			return -12
 
+		self.__algorithm.nfe = False
 		self.__algorithm.run(local_platypus.MaxTime(seconds))
+		
 		return self.__format_pareto()
+
+
+	def convergence_test(self, step):
+
+		if self.__status != 1:
+			return -10
+
+		if not isinstance(step, int) or step < 1:
+			return -13
+
+		self.__algorithm.nfe = False
+
+		start_time = time.time()
+		for i in range(step):
+			self.__algorithm.step()
+		pareto_set = [self.__format_pareto()]
+
+		while (True):
+			for i in range(step):
+				self.__algorithm.step()
+			pareto_set.append(self.__format_pareto())
+
+			if pareto_set[-2] == pareto_set[-1]:
+				break
+		pareto_set.append(time.time() - start_time)
+
+		return pareto_set
 
 
 	def get_status(self):
 		return self.__status
+
+	def get_current_pareto(self):
+		return local_platypus.nondominated(self.__algorithm.result)
