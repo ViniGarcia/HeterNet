@@ -13,6 +13,8 @@
 ################ COMMON IMPORTS ###############
 
 import numpy
+import sys
+import os
 
 import Genetic
 import Validator
@@ -75,22 +77,106 @@ def prepare(population):
 	for candidate in population:
 		aggregations.append([1-(candidate["RESULT"]["COST"] - min_cost)/var_cost if var_cost > 0 else 1.0, 1-(candidate["RESULT"]["LAT"] - min_lat)/var_lat if var_lat > 0 else 1.0, (candidate["RESULT"]["BDW"] - min_bdw)/var_bdw if var_bdw > 0 else 1.0])
 
-	print(pareto(aggregations))
+	return aggregations
 
 
 def compare(results):
 
-	pass
+	general = []
+	for result_set in results:
+		general += result_set
+	evaluations = pareto(general)
+
+	index = 0
+	pareto_sets = []
+	for result_set in results:
+		pareto_sets.append([])
+		for subindex in range(index, index + len(result_set)):
+			pareto_sets[-1].append(evaluations[subindex])
+		index += len(result_set)
+
+	return pareto_set
+
+
+def usage():
+
+	print("================== Service Mapping on Heterogeneous Networks (HeterNet) ==================")
+	print("USAGE: *.py request_file [FLAGS]")
+	print("FLAGS: ")
+	print("\t-p population_size: 0 < population_size < +n (std: 50)")
+	print("\t-c crossover_probability: 0 <= crossover_probability <= 1 (std: 1.0)")
+	print("\t-m mutation_probability: 0 <= crossover_probability <= 1 (std: 0.1)")
+	print("\t-g generations: 0 < generations < +n")
+	print("\t-t time: 0 < time < +n")
+	print("\t-o output: output file name (std: None)")
+	print("==========================================================================================")
+
 
 ###############################################
 
 
 ################# MAIN BEGIN ##################
 
-teste = Validator.Validator("Model.yaml")
-test2 = Genetic.Mapping(teste.get_yaml_data(), 30, 0, 0)
-res = test2.execute_generations(10)
+p = 50
+c = 1.0
+m = 0.1
+g = None
+t = None
+o = None
 
-prepare(res)
+if len(sys.argv) < 2:
+	usage()
+	exit()
+
+for index in range(2, len(sys.argv), 2):
+	if sys.argv[index] == "-p":
+		p = sys.argv[index+1]
+	elif sys.argv[index] == "-c":
+		c = sys.argv[index+1]
+	elif sys.argv[index] == "-m":
+		m = sys.argv[index+1]
+	elif sys.argv[index] == "-g":
+		g = sys.argv[index+1]
+	elif sys.argv[index] == "-t":
+		t = sys.argv[index+1]
+	elif sys.argv[index] == "-o":
+		o = sys.argv[index+1]
+
+if not os.path.isfile(sys.argv[1]):
+	print("ERROR: FILE DOES NOT EXIST!!\n")
+	exit()
+
+validator = Validator.Validator(sys.argv[1])
+if validator.get_status() != 1:
+	print("ERROR: COULD NOT VALIDATE THE PROVIDED REQUEST (", validator.get_status(), ")")
+	exit()
+
+mapper = Genetic.Mapping(validator.get_yaml_data(), p, c, m)
+if mapper.get_status() != 1:
+	print("ERROR: COULD NOT CREATE THE MAPPER ELEMENT (", mapper.get_status(), ")")
+	exit()
+
+if g == None and t == None:
+	print("ERROR: NO STOP CRITERIA DEFINED")
+	exit()
+
+if g != None and t != None:
+	print("ERROR: MULTIPLE STOP CRITERIA DEFINED")
+	exit()
+
+if g != None:
+	pareto_front = mapper.execute_generations(g)
+elif t != None:
+	pareto_front = mapper.execute_time(t)
+
+output = open(o, 'w') if o else sys.stdout
+
+if g != None or t != None:
+	output.write("[\n")
+	for candidate in pareto_front:
+		for index in range(len(candidate["MAP"])):
+			candidate["MAP"][index] = list(candidate["MAP"][index])
+		output.write(str(candidate) + ",\n")
+	output.write("]\n")
 
 ###############################################

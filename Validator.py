@@ -60,7 +60,7 @@ class Validator:
 	__file_path = None
 	__yaml_data = None
 	__yaml_proc = None
-	__exec_code = None
+	__status = None
 
 	def __init__(self, request_path):
 
@@ -72,7 +72,7 @@ class Validator:
 		
 		self.__file_path = request_path
 		if not os.path.isfile(self.__file_path):
-			self.__exec_code = -1
+			self.__status = -1
 			return False
 
 		raw_file = open(self.__file_path, "r")
@@ -82,10 +82,10 @@ class Validator:
 		try:
 			self.__yaml_data = yaml.safe_load(raw_data)
 		except Exception as e:
-			self.__exec_code = -2
+			self.__status = -2
 			return False
 
-		self.__exec_code = 0
+		self.__status = 0
 		return True
 
 
@@ -97,15 +97,15 @@ class Validator:
 			try:
 				key_list.remove(key)
 			except Exception as e:
-				self.__exec_code = -3
+				self.__status = -3
 				return False
 		if len(key_list):
-			self.__exec_code = -4
+			self.__status = -4
 			return False
 
 		#TOPOLOGY VALIDATION
 		if not isinstance(self.__yaml_data["TOPOLOGY"], list):
-			self.__exec_code = -5
+			self.__status = -5
 			return False
 
 		network_functions = {}
@@ -116,11 +116,11 @@ class Validator:
 			for symbol in [("<", ">", -7, 0), ("@", "@", -8, 1), ("!", "!", -9, 2)]:	
 				if element.startswith(symbol[0]):
 					if previous_function == None:
-						self.__exec_code = -6
+						self.__status = -6
 						return False
 					element = element.split(" ")
 					if element[-1] != symbol[1] or len(element) != 3:
-						self.__exec_code = symbol[2]
+						self.__status = symbol[2]
 						return False
 					network_functions[previous_function][symbol[3]] = element[1]
 					symbol_flag = True
@@ -129,7 +129,7 @@ class Validator:
 				continue
 
 			if element in network_functions:
-				self.__exec_code = -10
+				self.__status = -10
 				return False
 			network_functions[element] = [None, None, None]
 			network_service.append(element)
@@ -140,74 +140,74 @@ class Validator:
 		for domain in available_domains:
 			for symbol in [("COST", -11, float, -15), ("ORCH", -12, list, -16), ("TYPE", -13, str, -17), ("TRANSITION", -14, dict, -18)]:
 				if not symbol[0] in self.__yaml_data["DOMAINS"][domain]:
-					self.__exec_code = symbol[1]
+					self.__status = symbol[1]
 					return False
 				if not isinstance(self.__yaml_data["DOMAINS"][domain][symbol[0]], symbol[2]):
-					self.__exec_code = symbol[3]
+					self.__status = symbol[3]
 					return False
 
 			for orchestrator in self.__yaml_data["DOMAINS"][domain]["ORCH"]:
 				if not isinstance(orchestrator, str):
-					self.__exec_code = -19
+					self.__status = -19
 					return False
 
 			for connection in self.__yaml_data["DOMAINS"][domain]["TRANSITION"]:
 				if not connection in available_domains:
-					self.__exec_code = -20
+					self.__status = -20
 					return False
 
 				if not isinstance(self.__yaml_data["DOMAINS"][domain]["TRANSITION"][connection], dict):
-					self.__exec_code = -21
+					self.__status = -21
 					return False
 
 				key_list = ["LAT", "BDW"]
 				for key in self.__yaml_data["DOMAINS"][domain]["TRANSITION"][connection]:
 					if not key in key_list:
-						self.__exec_code = -22
+						self.__status = -22
 						return False
 					key_list.remove(key)
 
 					if not isinstance(self.__yaml_data["DOMAINS"][domain]["TRANSITION"][connection][key], float):
-						self.__exec_code = -23
+						self.__status = -23
 						return False
 					if self.__yaml_data["DOMAINS"][domain]["TRANSITION"][connection][key] < 0:
-						self.__exec_code = -24
+						self.__status = -24
 						return False
 
 		#REQUIREMENTS VALIDATION
 		key_list = ["COST", "LAT", "BDW"]
 		for requirement in self.__yaml_data["REQUIREMENTS"]:
 			if not requirement in key_list:
-				self.__exec_code = -25
+				self.__status = -25
 				return False
 			key_list.remove(requirement)
 
 			if not isinstance(self.__yaml_data["REQUIREMENTS"][requirement], list):
-				self.__exec_code = -26
+				self.__status = -26
 				return False
 
 			for expression in self.__yaml_data["REQUIREMENTS"][requirement]:
 				if not isinstance(expression, str):
-					self.__exec_code = -27
+					self.__status = -27
 					return False
 				if not expression.startswith(">") and not expression.startswith(">=") and not expression.startswith("<") and not expression.startswith("<=") and not expression.startswith("==") and not expression.startswith("!="):
-					self.__exec_code = -28
+					self.__status = -28
 					return False
 				segments = expression.split(" ")
 				if len(segments) != 2:
-					self.__exec_code = -29
+					self.__status = -29
 					return False
 				try:
 					segments[1] = float(segments[1])
 				except Exception as e:
-					self.__exec_code = -30
+					self.__status = -30
 					return False
 
 		if len(key_list) > 0:
-			self.__exec_code = -31
+			self.__status = -31
 			return False
 
-		self.__exec_code = 1
+		self.__status = 1
 		return True
 
 
@@ -219,7 +219,7 @@ class Validator:
 		return self.__yaml_data
 
 
-	def get_exec_code(self):
-		return self.__exec_code
+	def get_status(self):
+		return self.__status
 
 ###############################################

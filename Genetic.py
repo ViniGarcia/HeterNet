@@ -255,9 +255,22 @@ class Problem(local_platypus.Problem):
 #RESULTS CODES:
 
 #NORMAL CODES ->
-#1 -> READY TO EXECUTE
+#1: READY TO EXECUTE
 
 #ERROR CODES ->
+#-1: 
+#-2: 
+#-3: 
+#-4: 
+#-5: 
+#-6: 
+#-7: 
+#-8: 
+#-9: 
+#-10: 
+#-11: 
+#-12: 
+#-13: 
 
 ###############################################
 
@@ -357,7 +370,12 @@ class Mapping:
 		if self.__status != 1:
 			return -10
 
-		if not isinstance(generations, int) or generations < 1:
+		try:
+			generations = int(generations)
+		except:
+			return -11
+
+		if generations < 1:
 			return -11
 
 		self.__algorithm.nfe = False
