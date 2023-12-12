@@ -13,6 +13,7 @@
 ################ COMMON IMPORTS ###############
 
 import statistics
+import copy
 import sys
 import os
 
@@ -47,8 +48,8 @@ def redeployment_experiment(main_validator, main_mapper, redeployment_requests, 
 
 	deployment_fronts = []
 	for index in range(experiment_reps):
-		deployment_fronts.append(mapper.execute_generations(generation_step))
-		raw_pareto.append(mapper.get_current_pareto())
+		deployment_fronts.append(main_mapper.execute_generations(generation_step))
+		raw_pareto.append(main_mapper.get_current_pareto())
 
 	experiment_fronts = []
 	for request in redeployment_requests:
@@ -58,20 +59,19 @@ def redeployment_experiment(main_validator, main_mapper, redeployment_requests, 
 				print("REDEPLOYMENT REQUEST", request, "IS NOT VALID (ERROR ", main_validator.get_status(), ")")
 		else:
 			print("REDEPLOYMENT REQUEST", request, "IS NOT VALID (ERROR ", main_validator.get_status(), ")")
-		main_mapper.deployment_setup(validator.get_yaml_data(), population_size, crossover_rate, mutation_rate)
 
 		deployment = []
 		redeployment = []
 		for index in range(experiment_reps):
-			mapper.set_generator([])
-			deployment.append(mapper.execute_generations(generation_step))
-			mapper.set_generator(raw_pareto[index])
-			redeployment.append(mapper.execute_generations(generation_step))
-			raw_pareto[index] = mapper.get_current_pareto()
+			main_mapper.deployment_setup(main_validator.get_yaml_data(), population_size, crossover_rate, mutation_rate)
+			deployment.append(main_mapper.execute_generations(generation_step))
+			main_mapper.deployment_setup(main_validator.get_yaml_data(), population_size, crossover_rate, mutation_rate, raw_pareto[index])
+			redeployment.append(main_mapper.execute_generations(generation_step))
+			raw_pareto[index] = main_mapper.get_current_pareto()
 
 		experiment_fronts.append((deployment, redeployment))
 
-	#prepare visualization
+	return (deployment_fronts, experiment_fronts)
 
 ################# MAIN BEGIN ##################
 
@@ -146,7 +146,7 @@ else:
 		if not os.path.isfile(request):
 			print("ERROR: REDEPLOYMENT FILE DOES NOT EXIST!!\n")
 			exit()
-	redeployment_experiment(validator, mapper, erl, p, c, m, er)
+	experiment_front = redeployment_experiment(validator, mapper, erl, p, c, m, er)
 
 output = open(o, 'w') if o else sys.stdout
 
@@ -157,11 +157,36 @@ if g != None or t != None:
 			candidate["MAP"][index] = list(candidate["MAP"][index])
 		output.write(str(candidate) + ",\n")
 	output.write("]\n")
-if ec != None:
+elif ec != None:
 	front_compare = Genetic.compare(steps_front[:-1])
 	output.write("{\n")
 	for index in range(len(front_compare)):
-		output.write(str(index) + ":\n\t{\n\tMEAN: " + str(statistics.fmean(front_compare[index])) + ",\n\tLEN: " + str(len(front_compare[index])) + "\n\t},\n")
+		output.write(str(index) + ":\n\t{\n\tMEAN: " + str(round(statistics.fmean(front_compare[index]),2)) + ",\n\tMAX: " + str(max(front_compare[index])) + ",\n\tMIN: " + str(min(front_compare[index])) + ",\n\tLEN: " + str(len(front_compare[index])) + "\n\t},\n")
+	output.write("}")
+else:
+	every_result = copy.copy(experiment_front[0])
+	for tuple_results in experiment_front[1]:
+		every_result += tuple_results[0] + tuple_results[1]
+	pareto_results = Genetic.compare(every_result)
+	
+	index = len(experiment_front[0])
+	summary = [pareto_results[:len(experiment_front[0])]]
+	for tuple_results in experiment_front[1]:
+		summary.append(pareto_results[index:index+len(tuple_results[0])])
+		index += len(tuple_results[0])
+		summary.append(pareto_results[index:index+len(tuple_results[1])])
+		index += len(tuple_results[1])
+
+	output.write("{\n")
+	statistic_data = sum(summary[0], [])
+	output.write("\t" + sys.argv[1] + ": {MEAN_PARETO: " + str(round(statistics.fmean(statistic_data), 2)) + ", MAX_PARETO: " + str(max(statistic_data)) + ", MIN_PARETO: " + str(min(statistic_data)) + ", STDEV_PARETO: " + str(round(statistics.stdev(statistic_data),2)) + "},\n")
+	for index in range(len(erl)):
+		output.write("\t" + erl[index] + "-" + str(index+1) + ": {\n")
+		statistic_data = sum(summary[index*2 + 1], [])
+		output.write("\t\tDEPLOY: {MEAN_PARETO: " + str(round(statistics.fmean(statistic_data), 2)) + ", MAX_PARETO: " + str(max(statistic_data)) + ", MIN_PARETO: " + str(min(statistic_data)) + ", STDEV_PARETO: " + str(round(statistics.stdev(statistic_data),2)) + "},\n")
+		statistic_data = sum(summary[index*2 + 2], [])
+		output.write("\t\tREDEPLOY: {MEAN_PARETO: " + str(round(statistics.fmean(statistic_data), 2)) + ", MAX_PARETO: " + str(max(statistic_data)) + ", MIN_PARETO: " + str(min(statistic_data))  + ", STDEV_PARETO: " + str(round(statistics.stdev(statistic_data),2)) + "},\n")
+		output.write("\t},\n")
 	output.write("}")
 
 ###############################################
