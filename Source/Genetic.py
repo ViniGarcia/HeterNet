@@ -7,7 +7,7 @@ import numpy
 import random
 import statistics
 
-import local_platypus
+import LocalPlatypus
 import Translator
 
 ###############################################
@@ -102,7 +102,7 @@ def compare(results):
 
 ############# MUTATOR CLASS BEGIN #############
 
-class Mutator(local_platypus.Mutation):
+class Mutator(LocalPlatypus.Mutation):
 
 	def __init__(self, probability = 1.0, dependencies = {}):
 		super(Mutator, self).__init__()
@@ -150,7 +150,7 @@ class Mutator(local_platypus.Mutation):
 #IT ALSO DEFINES A SIMPLE ROUTINE FOR GE-
 #NERATING RANDOM VALID INDIVIDUALS.
 
-class Generator(local_platypus.Generator):
+class Generator(LocalPlatypus.Generator):
 
 	def __init__(self, dependencies = {}, solutions = []):
 		super(Generator, self).__init__()
@@ -164,7 +164,7 @@ class Generator(local_platypus.Generator):
 		if len(self.solutions) > 0:
 			return self.solutions.pop()
 		else:
-			solution = local_platypus.Solution(problem)
+			solution = LocalPlatypus.Solution(problem)
 			solution.variables = [x.rand() for x in problem.types]
 
 			for i in self.dependencies:
@@ -192,7 +192,7 @@ class Generator(local_platypus.Generator):
 
 ############# PROBLEM CLASS BEGIN #############
 
-class Problem(local_platypus.Problem):
+class Problem(LocalPlatypus.Problem):
 
 	__penalty = None
 	__domains = None
@@ -231,8 +231,8 @@ class Problem(local_platypus.Problem):
 		self.__prepare(request)
 
 		super(Problem, self).__init__(len(self.__service), 3, len(request["REQUIREMENTS"]["COST"]) + len(request["REQUIREMENTS"]["LAT"]) + len(request["REQUIREMENTS"]["BDW"]) + 1)
-		self.types[:] = [local_platypus.Integer(0, len(request["DOMAINS"])-1)] * len(self.__service)
-		self.directions[:] = [local_platypus.Problem.MINIMIZE, local_platypus.Problem.MINIMIZE, local_platypus.Problem.MAXIMIZE]
+		self.types[:] = [LocalPlatypus.Integer(0, len(request["DOMAINS"])-1)] * len(self.__service)
+		self.directions[:] = [LocalPlatypus.Problem.MINIMIZE, LocalPlatypus.Problem.MINIMIZE, LocalPlatypus.Problem.MAXIMIZE]
 		self.constraints[:] = [i.replace(" ", "") for i in (request["REQUIREMENTS"]["COST"] + request["REQUIREMENTS"]["LAT"] + request["REQUIREMENTS"]["BDW"])] + ["==1"]
 
 	def evaluate(self, solution):
@@ -369,9 +369,9 @@ class Mapping:
 		formatted_pareto = []
 		service = self.__problem.get_service_translator()
 		domains = self.__problem.get_domains_translator()
-		translator = local_platypus.Integer(0, len(self.__problem.get_domains())-1)
+		translator = LocalPlatypus.Integer(0, len(self.__problem.get_domains())-1)
 		
-		for candidate in local_platypus.nondominated(self.__algorithm.result):
+		for candidate in LocalPlatypus.nondominated(self.__algorithm.result):
 			deploy_map = [(service.from_to(0), domains.from_to(translator.decode(candidate.variables[0])))]
 			for index in range(1, len(candidate.variables)):
 				if candidate.variables[index-1] != candidate.variables[index]:
@@ -428,7 +428,7 @@ class Mapping:
 			return
 
 		for candidate in input_population:
-			if not isinstance(candidate, local_platypus.Solution):
+			if not isinstance(candidate, LocalPlatypus.Solution):
 				self.__status = -9
 				return
 			candidate.evaluated = False
@@ -436,10 +436,10 @@ class Mapping:
 		self.__request = request
 		self.__problem = Problem(self.__request)
 		self.__generator = Generator(dependencies = self.__problem.get_translated_dependencies(), solutions = input_population)
-		self.__selector = local_platypus.operators.TournamentSelector()
-		self.__crossover = local_platypus.operators.SBX(probability = float(crossover_rate))
+		self.__selector = LocalPlatypus.operators.TournamentSelector()
+		self.__crossover = LocalPlatypus.operators.SBX(probability = float(crossover_rate))
 		self.__mutator = Mutator(probability = float(mutation_rate), dependencies = self.__problem.get_translated_dependencies())
-		self.__algorithm = local_platypus.NSGAII(self.__problem, population_size = population_size, generator = self.__generator, selector = self.__selector, variator = local_platypus.operators.GAOperator(self.__crossover, self.__mutator))
+		self.__algorithm = LocalPlatypus.NSGAII(self.__problem, population_size = population_size, generator = self.__generator, selector = self.__selector, variator = LocalPlatypus.operators.GAOperator(self.__crossover, self.__mutator))
 
 		self.__status = 1
 
@@ -471,7 +471,7 @@ class Mapping:
 			return -12
 
 		self.__algorithm.nfe = False
-		self.__algorithm.run(local_platypus.MaxTime(seconds))
+		self.__algorithm.run(LocalPlatypus.MaxTime(seconds))
 		
 		return self.__format_pareto()
 
@@ -517,7 +517,7 @@ class Mapping:
 		return self.__status
 
 	def get_current_pareto(self):
-		return local_platypus.nondominated(self.__algorithm.result)
+		return LocalPlatypus.nondominated(self.__algorithm.result)
 
 	def set_generator(self, input_population):
 		self.__generator = Generator(dependencies = self.__problem.get_translated_dependencies(), solutions = input_population)

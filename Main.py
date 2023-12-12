@@ -17,6 +17,8 @@ import copy
 import sys
 import os
 
+sys.path.insert(0, "./Source/")
+
 import Genetic
 import Validator
 
