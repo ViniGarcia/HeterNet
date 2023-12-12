@@ -3,9 +3,88 @@
 
 import time
 import copy
+import numpy
 import random
+import statistics
+
 import local_platypus
 import Translator
+
+###############################################
+
+
+############### COMMON FUNCTIONS ##############
+
+def pareto(aggregations):
+
+	aggregations = numpy.array(aggregations)
+	i_dominates_j = numpy.all(aggregations[:,None] >= aggregations, axis=-1) & numpy.any(aggregations[:,None] > aggregations, axis=-1)
+	remaining = numpy.arange(len(aggregations))
+	fronts = numpy.empty(len(aggregations), int)
+	frontier_index = 0
+
+	while remaining.size > 0:
+		dominated = numpy.any(i_dominates_j[remaining[:,None], remaining], axis=0)
+		fronts[remaining[~dominated]] = frontier_index
+		remaining = remaining[dominated]
+		frontier_index += 1
+
+	return fronts.tolist()
+
+
+def prepare(population):
+
+	if len(population) == 0:
+		return
+
+	max_cost = population[0]["RESULT"]["COST"]
+	min_cost = population[0]["RESULT"]["COST"]
+	max_lat = population[0]["RESULT"]["LAT"]
+	min_lat = population[0]["RESULT"]["LAT"]
+	max_bdw = population[0]["RESULT"]["BDW"]
+	min_bdw = population[0]["RESULT"]["BDW"]
+
+	for candidate in population[1:]:
+		if candidate["RESULT"]["COST"] > max_cost:
+			max_cost = candidate["RESULT"]["COST"]
+		elif candidate["RESULT"]["COST"] < min_cost:
+			min_cost = candidate["RESULT"]["COST"]
+
+		if candidate["RESULT"]["LAT"] > max_lat:
+			max_lat = candidate["RESULT"]["LAT"]
+		elif candidate["RESULT"]["LAT"] < min_lat:
+			min_lat = candidate["RESULT"]["LAT"]
+
+		if candidate["RESULT"]["BDW"] > max_bdw:
+			max_bdw = candidate["RESULT"]["BDW"]
+		elif candidate["RESULT"]["BDW"] < min_bdw:
+			min_bdw = candidate["RESULT"]["BDW"]
+
+	var_cost = max_cost - min_cost
+	var_lat = max_lat - min_lat
+	var_bdw = max_bdw - min_bdw
+
+	aggregations = []
+	for candidate in population:
+		aggregations.append([1-(candidate["RESULT"]["COST"] - min_cost)/var_cost if var_cost > 0 else 1.0, 1-(candidate["RESULT"]["LAT"] - min_lat)/var_lat if var_lat > 0 else 1.0, (candidate["RESULT"]["BDW"] - min_bdw)/var_bdw if var_bdw > 0 else 1.0])
+
+	return aggregations
+
+
+def compare(results):
+
+	general = []
+	for result_set in results:
+		general += result_set
+	evaluations = pareto(prepare(general))
+
+	index = 0
+	pareto_sets = []
+	for result_set in results:
+		pareto_sets.append(evaluations[index:index+len(result_set)])
+		index += len(result_set)
+
+	return pareto_sets
 
 ###############################################
 
@@ -76,7 +155,7 @@ class Generator(local_platypus.Generator):
 	def __init__(self, dependencies = {}, solutions = []):
 		super(Generator, self).__init__()
 		self.dependencies = dependencies
-		self.solutions = solutions
+		self.solutions = []
 
 		for solution in solutions:
 			self.solutions.append(copy.deepcopy(solution))
@@ -374,7 +453,6 @@ class Mapping:
 			generations = int(generations)
 		except:
 			return -11
-
 		if generations < 1:
 			return -11
 
@@ -398,29 +476,39 @@ class Mapping:
 		return self.__format_pareto()
 
 
-	def convergence_test(self, step):
+	def convergence_experiment(self, step):
 
 		if self.__status != 1:
 			return -10
 
-		if not isinstance(step, int) or step < 1:
+		try:
+			step = int(step)
+		except:
+			return -13
+		if step < 1:
 			return -13
 
 		self.__algorithm.nfe = False
 
+		total_time = 0
+
 		start_time = time.time()
 		for i in range(step):
 			self.__algorithm.step()
+		total_time += time.time() - start_time
 		pareto_set = [self.__format_pareto()]
 
 		while (True):
+			start_time = time.time()
 			for i in range(step):
 				self.__algorithm.step()
+			total_time += time.time() - start_time
 			pareto_set.append(self.__format_pareto())
 
-			if pareto_set[-2] == pareto_set[-1]:
+			pareto_comparision = compare(pareto_set[-2:])
+			if len(pareto_comparision[0]) == len(pareto_comparision[1]) and statistics.fmean(pareto_comparision[0]) == statistics.fmean(pareto_comparision[1]):
 				break
-		pareto_set.append(time.time() - start_time)
+		pareto_set.append(total_time)
 
 		return pareto_set
 
@@ -430,3 +518,6 @@ class Mapping:
 
 	def get_current_pareto(self):
 		return local_platypus.nondominated(self.__algorithm.result)
+
+	def set_generator(self, input_population):
+		self.__generator = Generator(dependencies = self.__problem.get_translated_dependencies(), solutions = input_population)
