@@ -29,7 +29,7 @@ from abc import ABCMeta, abstractmethod
 from .core import Algorithm, ParetoDominance, AttributeDominance,\
     AttributeDominance, nondominated_sort, nondominated_prune,\
     nondominated_truncate, nondominated_truncate_conservative, nondominated_truncate_disruptive, \
-    nondominated_split, crowding_distance,\
+    nondominated_truncate_diverge, nondominated_split, crowding_distance,\
     EPSILON, POSITIVE_INFINITY, Archive, EpsilonDominance, FitnessArchive,\
     Solution, HypervolumeFitnessEvaluator, nondominated_cmp, fitness_key,\
     crowding_distance_key, AdaptiveGridArchive, Selector, EpsilonBoxArchive,\
@@ -207,15 +207,20 @@ class NSGAII(AbstractGeneticAlgorithm):
             
         self.evaluate_all(offspring)
        
-        if self.counter % 5 != 0:
+        if self.counter % 10 != 0:
             #POPULATION ALWAYS IMPROVE THE OVERALL FITNESS - FAST CONVERGENCE, MORE EXPLOITATION THAN EXPLORATION
             offspring.extend(self.population)
             nondominated_sort(offspring)
             self.population = nondominated_truncate_conservative(self.population, offspring, self.population_size)
         else:
             #POPULATION SOMETIMES DECREASES THE OVERALL FITNESS - CAN DIVERGE SOMETIMES, MORE EXPLORATION THAN EXPLOITATION
-            nondominated_sort(offspring + self.population)
-            self.population = nondominated_truncate_disruptive(self.population, offspring, self.population_size)
+            offspring.extend(self.population)
+            nondominated_sort(offspring)
+            self.population = nondominated_truncate_diverge(offspring, self.population_size)
+            if len(self.population) < self.population_size:
+                adjust_population = [self.generator.generate(self.problem) for _ in range(self.population_size - len(self.population))]
+                self.evaluate_all(adjust_population)
+                self.population += adjust_population
 
         if self.archive is not None:
             self.archive.extend(self.population)

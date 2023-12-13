@@ -8,7 +8,7 @@ class RequestGenerator:
 	__metrics = None
 	__status = None
 
-	def __defineService(self, service, bounds, stype):
+	def __defineService(self, service, stype):
 		skeleton = {"TOPOLOGY":[]}
 
 		index = 0
@@ -221,7 +221,7 @@ class RequestGenerator:
 
 		return self.__defineMetrics(networkx.to_dict_of_dicts(networkx.wheel_graph(nodes)))
 
-	def serviceGraph(self, functions, bounds, stype):
+	def serviceGraph(self, functions, stype):
 
 		if not isinstance(functions, list):
 			self.__status = -25
@@ -230,33 +230,6 @@ class RequestGenerator:
 			if not isinstance(item, str):
 				self.__status = -26
 				return -26
-
-		if not isinstance(bounds, dict):
-			self.__status = -27
-			return -27
-		if not "MEMORY" in bounds or not "VCPU" in bounds or not "IFACES" in bounds or len(bounds) != 3:
-			self.__status = -28
-			return -28
-
-		for key in bounds:
-			if not isinstance(bounds[key], dict):
-				self.__status = -29
-				return -29
-			if not "BEGIN" in bounds[key] or not "END" in bounds[key] or len(bounds[key]) != 2:
-				self.__status = -30
-				return -30
-
-			for marks in bounds[key]:
-				if not isinstance(bounds[key][marks], int):
-					self.__status = -31
-					return -31
-				if bounds[key][marks] < 0:
-					self.__status = -32
-					return -32
-
-			if bounds[key]["BEGIN"] > bounds[key]["END"]:
-				self.__status = -33
-				return -33
 
 		if not isinstance(stype, str):
 			self.__status = -34
@@ -270,7 +243,7 @@ class RequestGenerator:
 			self.__status = -36
 			return -36
 
-		return self.__defineService(functions, bounds, stype)
+		return self.__defineService(functions, stype)
 
 	def requestDocument(self, path, service, network):
 
@@ -288,5 +261,5 @@ class RequestGenerator:
 
 test = RequestGenerator({"LOCAL":{"COST":{"BEGIN":50, "END":1000}}, "TRANSITION":{"LAT":{"BEGIN":15, "END": 200}, "BDW":{"BEGIN":1000, "END":40000}}})
 network = test.completeGraph(100)
-service = test.serviceGraph(["F1", "F2", "F3", "F4", "F5"], {"MEMORY":{"BEGIN":512, "END":512}, "VCPU":{"BEGIN":1, "END":1}, "IFACES":{"BEGIN":2, "END":2}}, "LINEAR")
+service = test.serviceGraph(["F1", "F2", "F3", "F4", "F5", "F6"], "LINEAR")
 test.requestDocument("100x5.yaml", service, network)

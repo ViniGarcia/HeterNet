@@ -1212,6 +1212,26 @@ def nondominated_truncate_disruptive(population, offspring, size):
         new_population += sorted_solutions[:size-len(new_population)]
 
     return new_population
+
+def nondominated_truncate_diverge(solutions, max_size):
+
+    summary = []
+    removal = []
+    for result in solutions:
+        objectives_sum = sum(result.objectives)
+        if objectives_sum in summary:
+            removal.append(result)
+        else:
+            summary.append(objectives_sum)
+
+    for result in removal:
+        solutions.remove(result)
+
+    sorted_solutions = sorted(solutions, key=functools.cmp_to_key(nondominated_cmp))
+    if len(sorted_solutions) < max_size:
+        return sorted_solutions
+    else:
+        return sorted_solutions[:max_size]
         
 def truncate_fitness(solutions, size, larger_preferred=True, getter=fitness_key):
     """Truncates a population based on a fitness value.
