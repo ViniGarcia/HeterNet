@@ -176,6 +176,7 @@ class NSGAII(AbstractGeneticAlgorithm):
         self.selector = selector
         self.variator = variator
         self.archive = archive
+        self.counter = 0
         
     def step(self):
         if self.nfe == 0:
@@ -206,20 +207,20 @@ class NSGAII(AbstractGeneticAlgorithm):
             
         self.evaluate_all(offspring)
        
-        
-        #POPULATION ALWAYS IMPROVE THE OVERALL FITNESS - FAST CONVERGENCE, MORE EXPLOITATION THAN EXPLORATION
-        offspring.extend(self.population)
-        nondominated_sort(offspring)
-        self.population = nondominated_truncate_conservative(self.population, offspring, self.population_size)
-        
-        '''
-        #POPULATION SOMETIMES DECREASES THE OVERALL FITNESS - CAN DIVERGE SOMETIMES, MORE EXPLORATION THAN EXPLOITATION
-        nondominated_sort(offspring + self.population)
-        self.population = nondominated_truncate_disruptive(self.population, offspring, self.population_size)
-        '''
+        if self.counter % 5 != 0:
+            #POPULATION ALWAYS IMPROVE THE OVERALL FITNESS - FAST CONVERGENCE, MORE EXPLOITATION THAN EXPLORATION
+            offspring.extend(self.population)
+            nondominated_sort(offspring)
+            self.population = nondominated_truncate_conservative(self.population, offspring, self.population_size)
+        else:
+            #POPULATION SOMETIMES DECREASES THE OVERALL FITNESS - CAN DIVERGE SOMETIMES, MORE EXPLORATION THAN EXPLOITATION
+            nondominated_sort(offspring + self.population)
+            self.population = nondominated_truncate_disruptive(self.population, offspring, self.population_size)
 
         if self.archive is not None:
             self.archive.extend(self.population)
+
+        self.counter += 1
 
 class EpsMOEA(AbstractGeneticAlgorithm):
     
