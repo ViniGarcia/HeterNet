@@ -4,7 +4,6 @@ TOPOLOGY:
   - F3
   - F4
   - F5
-  - F6
 DOMAINS:
   '0':
     COST: 10.0 

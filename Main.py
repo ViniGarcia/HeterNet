@@ -13,6 +13,7 @@
 ################ COMMON IMPORTS ###############
 
 import statistics
+import time
 import copy
 import sys
 import os
@@ -75,6 +76,38 @@ def redeployment_experiment(main_validator, main_mapper, redeployment_requests, 
 
 	return (deployment_fronts, experiment_fronts)
 
+def timing_experiment(mapper, step, generations):
+
+	try:
+		step = int(step)
+	except:
+		print("ERROR: INVALID STEP SIZE PROVIDED!!")
+		exit()
+
+	try:
+		generations = int(generations)
+	except:
+		print("ERROR: INVALID MAXIMUM NUMBER OF GENERATIONS PROVIDED")
+		exit()
+
+	executing_steps = step
+	experiment_reps = 30
+	
+	timing_results = []
+	while executing_steps <= generations:
+		current_timing = []
+		for _ in range(experiment_reps):
+			time_init = time.time()
+			mapper.execute_generations(executing_steps)
+			current_timing.append(time.time() - time_init)
+		timing_results.append(current_timing)
+		executing_steps *= 2
+
+	for index in range(len(timing_results)):
+		timing_results[index] = (pow(2, index) * step, statistics.mean(timing_results[index]), statistics.stdev(timing_results[index]))
+
+	return timing_results
+
 ################# MAIN BEGIN ##################
 
 p = 50
@@ -85,6 +118,7 @@ t = None
 ec = None
 er = None
 erl = None
+et = None
 o = None
 
 if len(sys.argv) < 2:
@@ -112,6 +146,8 @@ for index in range(2, len(sys.argv), 2):
 			print("ERROR: NEXT REQUEST DEFINED WITHOUT A REDEPLOYMENT REQUIREMENT!!\n")
 			exit()
 		erl.append(sys.argv[index + 1])
+	elif sys.argv[index] == "-et":
+		et = sys.argv[index+1]
 	elif sys.argv[index] == "-o":
 		o = sys.argv[index+1]
 
@@ -137,7 +173,12 @@ if [g, t, ec, er].count(None) != 3:
 	print("ERROR: MULTIPLE STOP CRITERIA DEFINED")
 	exit()
 
-if g != None:
+if et != None:
+	if g == None:
+		print("ERROR: A MAXIMUM NUMBER OF GENERATIONS WAS NOT DEFINED!!")
+		exit()
+	timing_results = timing_experiment(mapper, et, g)
+elif g != None:
 	pareto_front = mapper.execute_generations(g)
 elif t != None:
 	pareto_front = mapper.execute_time(t)
@@ -152,7 +193,7 @@ else:
 
 output = open(o, 'w') if o else sys.stdout
 
-if g != None or t != None:
+if (g != None and et == None) or t != None:
 	output.write("[\n")
 	for candidate in pareto_front:
 		for index in range(len(candidate["MAP"])):
@@ -164,8 +205,8 @@ elif ec != None:
 	output.write("{\n")
 	for index in range(len(front_compare)):
 		output.write(str(index) + ":\n\t{\n\tMEAN: " + str(round(statistics.fmean(front_compare[index]),2)) + ",\n\tMAX: " + str(max(front_compare[index])) + ",\n\tMIN: " + str(min(front_compare[index])) + ",\n\tLEN: " + str(len(front_compare[index])) + "\n\t},\n")
-	output.write("}")
-else:
+	output.write("}\n")
+elif er != None:
 	every_result = copy.copy(experiment_front[0])
 	for tuple_results in experiment_front[1]:
 		every_result += tuple_results[0] + tuple_results[1]
@@ -189,6 +230,11 @@ else:
 		statistic_data = sum(summary[index*2 + 2], [])
 		output.write("\t\tREDEPLOY: {MEAN_PARETO: " + str(round(statistics.fmean(statistic_data), 2)) + ", MAX_PARETO: " + str(max(statistic_data)) + ", MIN_PARETO: " + str(min(statistic_data))  + ", STDEV_PARETO: " + str(round(statistics.stdev(statistic_data),2)) + "},\n")
 		output.write("\t},\n")
-	output.write("}")
+	output.write("}\n")
+elif et != None:
+	output.write("{\n")
+	for result_set in timing_results:
+		output.write("\t" + str(result_set[0]) + ": {MEAN_TIME: " + str(round(result_set[1], 4)) + ", STDEV_TIME: " + str(round(result_set[2], 4)) + "},\n")
+	output.write("}\n")
 
 ###############################################

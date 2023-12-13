@@ -52,7 +52,7 @@ class RequestGenerator:
 			t_skeleton = copy.deepcopy(graph[e_node])
 			l_skeleton = copy.deepcopy(m_skeleton)
 
-			quantity = random.randint(0, len(orchestrators)-1)
+			quantity = random.randint(1, len(orchestrators)-1)
 			l_skeleton["ORCH"] = random.sample(orchestrators, quantity)
 			l_skeleton["TYPE"] = random.sample(types, 1)[0]
 
@@ -260,6 +260,6 @@ class RequestGenerator:
 
 
 test = RequestGenerator({"LOCAL":{"COST":{"BEGIN":50, "END":1000}}, "TRANSITION":{"LAT":{"BEGIN":15, "END": 200}, "BDW":{"BEGIN":1000, "END":40000}}})
-network = test.completeGraph(100)
-service = test.serviceGraph(["F1", "F2", "F3", "F4", "F5", "F6"], "LINEAR")
-test.requestDocument("100x5.yaml", service, network)
+network = test.completeGraph(150)
+service = test.serviceGraph(["F1", "F2", "F3", "F4", "F5"], "LINEAR")
+test.requestDocument("150x5.yaml", service, network)
