@@ -256,7 +256,7 @@ class Problem(LocalPlatypus.Problem):
 					solution.evaluated = True
 					return
 			if self.__service[self.__service_translator.from_to(gene)][2] != None:
-				if not self.__service[self.__service_translator.from_to(gene)][1] in self.__domains[allele][1]["ORCH"]:
+				if not self.__service[self.__service_translator.from_to(gene)][2] in self.__domains[allele][1]["ORCH"]:
 					solution.constraints = [0 for i in range(sum(self.__constraints))] + [0]
 					solution.objectives[:] = self.__penalty
 					solution.evaluated = True
@@ -372,6 +372,8 @@ class Mapping:
 		translator = LocalPlatypus.Integer(0, len(self.__problem.get_domains())-1)
 		
 		for candidate in LocalPlatypus.nondominated(self.__algorithm.result):
+			if not candidate.feasible:
+				continue
 			deploy_map = [(service.from_to(0), domains.from_to(translator.decode(candidate.variables[0])))]
 			for index in range(1, len(candidate.variables)):
 				if candidate.variables[index-1] != candidate.variables[index]:

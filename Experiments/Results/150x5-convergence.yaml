@@ -1,5 +1,5 @@
-python3 Main.py Experiments/150x5.yaml -ec 250 -p 100 -m 0.3
 {
+execution: "python3 Main.py Experiments/150x5.yaml -ec 250 -p 100 -m 0.3",
 0:
 	{
 	MEAN: 4.09,
