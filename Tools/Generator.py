@@ -287,6 +287,6 @@ class RequestGenerator:
 
 
 test = RequestGenerator({"LOCAL":{"COST":{"BEGIN":50, "END":1000}}, "TRANSITION":{"LAT":{"BEGIN":15, "END": 200}, "BDW":{"BEGIN":1000, "END":40000}}})
-network = test.completeGraph(15)
+network = test.completeGraph(100)
 service = test.serviceGraph(["F1", "F2", "F3", "F4", "F5"], {"MEMORY":{"BEGIN":512, "END":512}, "VCPU":{"BEGIN":1, "END":1}, "IFACES":{"BEGIN":2, "END":2}}, "LINEAR")
-test.requestDocument("15x5.yaml", service, network)
+test.requestDocument("100x5.yaml", service, network)

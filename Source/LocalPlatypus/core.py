@@ -1180,6 +1180,38 @@ def nondominated_truncate(solutions, size):
     """
     result = sorted(solutions, key=functools.cmp_to_key(nondominated_cmp)) 
     return result[:size]
+
+def nondominated_truncate_conservative(population, solutions, size):
+
+    for result in population:
+        if result.rank != 0:
+            population.remove(result)
+
+    sorted_solutions = sorted(solutions, key=functools.cmp_to_key(nondominated_cmp))
+    for result in sorted_solutions:
+        if len(population) >= size:
+            break
+        if not result in population:
+            population.append(result)
+
+    return population
+
+def nondominated_truncate_disruptive(population, offspring, size):
+
+    new_population = []
+    refill_population = []
+
+    for result in offspring:
+        if result.rank == 0:
+            new_population.append(result)
+        else:
+            refill_population.append(result)
+
+    if len(new_population) < size:
+        sorted_solutions = sorted(population + refill_population, key=functools.cmp_to_key(nondominated_cmp))
+        new_population += sorted_solutions[:size-len(new_population)]
+
+    return new_population
         
 def truncate_fitness(solutions, size, larger_preferred=True, getter=fitness_key):
     """Truncates a population based on a fitness value.

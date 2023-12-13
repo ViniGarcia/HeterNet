@@ -493,15 +493,13 @@ class Mapping:
 		total_time = 0
 
 		start_time = time.time()
-		for i in range(step):
-			self.__algorithm.step()
+		self.__algorithm.run(step)
 		total_time += time.time() - start_time
 		pareto_set = [self.__format_pareto()]
 
 		while (True):
 			start_time = time.time()
-			for i in range(step):
-				self.__algorithm.step()
+			self.__algorithm.run(step)
 			total_time += time.time() - start_time
 			pareto_set.append(self.__format_pareto())
 
