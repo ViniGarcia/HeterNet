@@ -68097,7 +68097,7 @@ DOMAINS:
 REQUIREMENTS:
   BDW: []
   COST: []
-  LAT: []
+  LAT: ["== 0"]
 TOPOLOGY:
 - F1
 - F2

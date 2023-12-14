@@ -44,6 +44,20 @@ def usage():
 
 ###############################################
 
+def comparing_experiment(main_mapper, comparing_mapper, execution_time):
+
+	experiment_reps = 30
+	
+	main_fronts = []
+	comparing_fronts = []
+	for index in range(experiment_reps):
+		main_fronts.append(main_mapper.execution_time(execution_time))
+		comparing_fronts.append(comparing_mapper.execute_time(execution_time))
+		if isinstance(main_fronts[-1], int) or isintance(comparing_fronts[-1], int):
+			return ([],[])
+
+	return (main_fronts, comparing_fronts)
+
 def redeployment_experiment(main_validator, main_mapper, redeployment_requests, population_size, crossover_rate, mutation_rate, generation_step):
 
 	experiment_reps = 30
@@ -194,12 +208,27 @@ else:
 output = open(o, 'w') if o else sys.stdout
 
 if (g != None and et == None) or t != None:
-	output.write("[\n")
+	extra_info = {'COST':[float('inf'), None], 'LAT':[float('inf'), None], "BDW":[float('-inf'), None]}
+	output.write("[\n[\n")
 	for candidate in pareto_front:
 		for index in range(len(candidate["MAP"])):
 			candidate["MAP"][index] = list(candidate["MAP"][index])
-		output.write(str(candidate) + ",\n")
-	output.write("]\n")
+		output.write("\t" + str(candidate) + ",\n")
+		if candidate["RESULT"]["COST"] < extra_info["COST"][0]:
+			extra_info["COST"][0] = candidate["RESULT"]["COST"]
+			extra_info["COST"][1] = candidate
+		if candidate["RESULT"]["LAT"] < extra_info["LAT"][0]:
+			extra_info["LAT"][0] = candidate["RESULT"]["LAT"]
+			extra_info["LAT"][1] = candidate
+		if candidate["RESULT"]["BDW"] > extra_info["BDW"][0]:
+			extra_info["BDW"][0] = candidate["RESULT"]["BDW"]
+			extra_info["BDW"][1] = candidate
+	output.write("],\n")
+	output.write("{\n")
+	output.write("\tBEST_COST: " + str(extra_info["COST"][1]) + ",\n")
+	output.write("\tBEST_LAT: " + str(extra_info["LAT"][1]) + ",\n")
+	output.write("\tBEST_BDW: " + str(extra_info["BDW"][1]) + "\n")
+	output.write("}\n]\n")
 elif ec != None:
 	front_compare = Genetic.compare(steps_front[:-1])
 	output.write("{\n")

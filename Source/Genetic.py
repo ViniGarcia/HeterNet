@@ -469,7 +469,11 @@ class Mapping:
 		if self.__status != 1:
 			return -10
 
-		if not isinstance(seconds, int) or seconds < 1:
+		try:
+			seconds = int(seconds)
+		except:
+			return -12
+		if seconds < 1:
 			return -12
 
 		self.__algorithm.nfe = False
