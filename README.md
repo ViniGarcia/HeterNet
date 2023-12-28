@@ -1,2 +1,1 @@
-# HeterNet
-Deployment in Heterogeneous Networks
+# Service Mapping Expedient for Network Traffic and Environments (SeMENTE)
