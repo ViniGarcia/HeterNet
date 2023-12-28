@@ -1,1 +1,1 @@
-# Service Mapping Expedient for Network Traffic and Environments (SeMENTE)
+# Service Mapping Expedient for Networked Traffic and Environments (SeMENTE)
