@@ -3,13 +3,13 @@ Service Mapping Expedient for Networked Traffic and Environments (SeMENTE)
 
 ### What is SeMENTE?
 
-A Service Function Chain (SFC) defines a virtualized network service by chaining together multiple virtualized functions. The Multi-SFC [1], in turn, enables the composition of distributed services across various clouds, domains, and orchestrators within the Network Function Virtualization (NFV) paradigm. This approach overcomes the limitations of traditional deployments, where all Virtual Network Functions (VNFs) in an SFC belong to a single domain or point of presence. However, allocating resources in a Multi-SFC scenario for optimized SFC deployment is a challenging task. Thus, SeMENTE consists of a bioinspired strategy for mapping SFCs in the Multi-SFC context.
+<p align="justify">A Service Function Chain (SFC) defines a virtualized network service by chaining together multiple virtualized functions. The Multi-SFC [1], in turn, enables the composition of distributed services across various clouds, domains, and orchestrators within the Network Function Virtualization (NFV) paradigm. This approach overcomes the limitations of traditional deployments, where all Virtual Network Functions (VNFs) in an SFC belong to a single domain or point of presence. However, allocating resources in a Multi-SFC scenario for optimized SFC deployment is a challenging task. Thus, SeMENTE consists of a bioinspired strategy for mapping SFCs in the Multi-SFC context.</p>
 
-SeMENTE optimization aims to minimize overall deployment financial costs, minimize interdomain latency, and maximize interdomain bandwidth.
+<p align="justify">SeMENTE optimization aims to minimize overall deployment financial costs, minimize interdomain latency, and maximize interdomain bandwidth.</p>
 
 ### How to use the SeMENTE mapper?
 
-SeMENTE receives a YAML file as input, which defines the service topology, network domains, and mapping requirements. Currently, the SeMENTE application supports only linear service chains, which are defined as a simple YAML list with the network function IDs in order. For example, consider a linear topology with three network functions (NF1 -> NF2 -> NF3 -> NF4 -> NF5), where NF1 must be deployed in a domain with Tacker support, NF2 must be pinned to D0, and NF3 must be allocated in a cloud domain:
+<p align="justify">SeMENTE receives a YAML file as input, which defines the service topology, network domains, and mapping requirements. Currently, the SeMENTE application supports only linear service chains, which are defined as a simple YAML list with the network function IDs in order. For example, consider a linear topology with three network functions (NF1 -> NF2 -> NF3 -> NF4 -> NF5), where NF1 must be deployed in a domain with Tacker support, NF2 must be pinned to D0, and NF3 must be allocated in a cloud domain:</p>
 
 ```
 TOPOLOGY:
@@ -23,7 +23,7 @@ TOPOLOGY:
   - NF5 
 ```
 
-The domain definition requires a unique ID, the domain cost (float), the available orchestrators (list of strings), the domain type (string), and the available transitions, which indicate connections/links with other domains (using the ID) and metrics to evaluate such connections/links by latency (float) and available interdomain bandwidth (float). Here is an example with three fully connected domains (D0, D1, and D2):
+<p align="justify">The domain definition requires a unique ID, the domain cost (float), the available orchestrators (list of strings), the domain type (string), and the available transitions, which indicate connections/links with other domains (using the ID) and metrics to evaluate such connections/links by latency (float) and available interdomain bandwidth (float). Here is an example with three fully connected domains (D0, D1, and D2):</p>
 
 ```
 DOMAINS:
@@ -62,7 +62,7 @@ DOMAINS:
         BDW: 20000.0 
 ```
 
-Finally, policies and general requirements can be defined as a list of strings for each metric evaluated. Such requirements are relational expressions. For example, the following policies define that the mapping process should return results with costs less than or equal to 100, latency less than 550, and bandwidth greater than or equal to 10000:
+<p align="justify">Finally, policies and general requirements can be defined as a list of strings for each metric evaluated. Such requirements are relational expressions. For example, the following policies define that the mapping process should return results with costs less than or equal to 100, latency less than 550, and bandwidth greater than or equal to 10000:</p>
 
 ```
 REQUIREMENTS:           #ALLOWS >, >=, <, <=, ==, != REQUIREMENTS
@@ -71,7 +71,7 @@ REQUIREMENTS:           #ALLOWS >, >=, <, <=, ==, != REQUIREMENTS
   BDW: [">= 10000"]
  ```
 
-After defining the YAML file that describes the optimization to be performed, it is possible to execute the SeMENTE program by tuning the genetic algorithm configurations:
+<p align="justify">After defining the YAML file that describes the optimization to be performed, it is possible to execute the SeMENTE program by tuning the genetic algorithm configurations:</p>
 
 ```
 ================== Service Mapping Expedient for Networked Traffic and Environments (SeMENTE) ==================
@@ -89,7 +89,7 @@ After defining the YAML file that describes the optimization to be performed, it
 =================================================================================================================
 ```
 
-The results will be presented in the prompt, and cosists of the candidates located at the Pareto Frontier defined in the last generation created by the algoriothm (the mapping may include extra network function to enable tunnels between different domains):
+<p align="justify">The results will be presented in the prompt, and cosists of the candidates located at the Pareto Frontier defined in the last generation created by the algoriothm (the mapping may include extra network function to enable tunnels between different domains):</p>
 
 ```
 {'MAP': [['NF1', 'D0'], ['NF2', 'D0'], ['NTF', 'D0'], ['NTF', 'D1'], ['NF3', 'D1'], ['NF4', 'D1'], ['NF5', 'D1']], 'RESULT': {'COST': 50.0, 'LAT': 100.0, 'BDW': 10000.0}},
@@ -108,12 +108,12 @@ BEST_BDW: {'MAP': [['NF1', 'D1'], ['NTF', 'D1'], ['NTF', 'D0'], ['NF2', 'D0'], [
 
 ### Support
 
-Contact us towards git issues requests or by the e-mail vinicius@inf.ufpr.br.
+<p align="justify">Contact us towards git issues requests or by the e-mail vinicius@inf.ufpr.br.</p>
 
 ### Publications
 
-Fulber-Garcia, V. and Flauzino, J. amd Huff, A. and Venâncio, G. and Duarte Jr., E. P.. Uma Estratégia Bioinspirada para Alocação Dinâmica de SFCs em Múltiplos Domínios, Nuvens e Orquestradores NFV. Simpósio Brasileiro de Redes de Computadores e Sistemas Distribuídos (SBRC). 2024. 
+<p align="justify">Fulber-Garcia, V. and Flauzino, J. amd Huff, A. and Venâncio, G. and Duarte Jr., E. P.. Uma Estratégia Bioinspirada para Alocação Dinâmica de SFCs em Múltiplos Domínios, Nuvens e Orquestradores NFV. Simpósio Brasileiro de Redes de Computadores e Sistemas Distribuídos (SBRC). 2024.</p>
 
 ### References
 
-[1] Huff, A.; Souza, G. V. d.; Fulber-Garcia, V.; Duarte Jr., E. P.. Building Multi-domain Service Function Chains Based on Multiple NFV Orchestrators. Conference on Network Function Virtualization and Software Defined Networks (NFV-SDN). 2020.
+<p align="justify">[1] Huff, A.; Souza, G. V. d.; Fulber-Garcia, V.; Duarte Jr., E. P.. Building Multi-domain Service Function Chains Based on Multiple NFV Orchestrators. Conference on Network Function Virtualization and Software Defined Networks (NFV-SDN). 2020.</p>
