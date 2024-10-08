@@ -1,0 +1,297 @@
+{
+0:
+	{
+	MEAN: 3.39,
+	MAX: 5,
+	MIN: 2,
+	LEN: 77
+	},
+1:
+	{
+	MEAN: 2.63,
+	MAX: 4,
+	MIN: 0,
+	LEN: 19
+	},
+2:
+	{
+	MEAN: 2.19,
+	MAX: 4,
+	MIN: 0,
+	LEN: 90
+	},
+3:
+	{
+	MEAN: 1.83,
+	MAX: 4,
+	MIN: 0,
+	LEN: 58
+	},
+4:
+	{
+	MEAN: 1.63,
+	MAX: 4,
+	MIN: 0,
+	LEN: 100
+	},
+5:
+	{
+	MEAN: 1.39,
+	MAX: 3,
+	MIN: 0,
+	LEN: 97
+	},
+6:
+	{
+	MEAN: 1.5,
+	MAX: 3,
+	MIN: 0,
+	LEN: 62
+	},
+7:
+	{
+	MEAN: 1.33,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+8:
+	{
+	MEAN: 1.13,
+	MAX: 3,
+	MIN: 0,
+	LEN: 95
+	},
+9:
+	{
+	MEAN: 1.06,
+	MAX: 3,
+	MIN: 0,
+	LEN: 36
+	},
+10:
+	{
+	MEAN: 1.0,
+	MAX: 3,
+	MIN: 0,
+	LEN: 99
+	},
+11:
+	{
+	MEAN: 0.91,
+	MAX: 3,
+	MIN: 0,
+	LEN: 80
+	},
+12:
+	{
+	MEAN: 0.86,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+13:
+	{
+	MEAN: 0.97,
+	MAX: 3,
+	MIN: 0,
+	LEN: 97
+	},
+14:
+	{
+	MEAN: 0.7,
+	MAX: 3,
+	MIN: 0,
+	LEN: 47
+	},
+15:
+	{
+	MEAN: 0.55,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+16:
+	{
+	MEAN: 0.5,
+	MAX: 2,
+	MIN: 0,
+	LEN: 92
+	},
+17:
+	{
+	MEAN: 0.44,
+	MAX: 2,
+	MIN: 0,
+	LEN: 41
+	},
+18:
+	{
+	MEAN: 0.45,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+19:
+	{
+	MEAN: 0.48,
+	MAX: 2,
+	MIN: 0,
+	LEN: 86
+	},
+20:
+	{
+	MEAN: 0.4,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+21:
+	{
+	MEAN: 0.45,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+22:
+	{
+	MEAN: 0.46,
+	MAX: 2,
+	MIN: 0,
+	LEN: 76
+	},
+23:
+	{
+	MEAN: 0.43,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+24:
+	{
+	MEAN: 0.39,
+	MAX: 2,
+	MIN: 0,
+	LEN: 97
+	},
+25:
+	{
+	MEAN: 0.37,
+	MAX: 2,
+	MIN: 0,
+	LEN: 46
+	},
+26:
+	{
+	MEAN: 0.31,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+27:
+	{
+	MEAN: 0.36,
+	MAX: 2,
+	MIN: 0,
+	LEN: 95
+	},
+28:
+	{
+	MEAN: 0.34,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+29:
+	{
+	MEAN: 0.23,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+30:
+	{
+	MEAN: 0.28,
+	MAX: 3,
+	MIN: 0,
+	LEN: 89
+	},
+31:
+	{
+	MEAN: 0.05,
+	MAX: 1,
+	MIN: 0,
+	LEN: 98
+	},
+32:
+	{
+	MEAN: 0.08,
+	MAX: 1,
+	MIN: 0,
+	LEN: 99
+	},
+33:
+	{
+	MEAN: 0.1,
+	MAX: 2,
+	MIN: 0,
+	LEN: 88
+	},
+34:
+	{
+	MEAN: 0.09,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+35:
+	{
+	MEAN: 0.12,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+36:
+	{
+	MEAN: 0.05,
+	MAX: 2,
+	MIN: 0,
+	LEN: 77
+	},
+37:
+	{
+	MEAN: 0.05,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+38:
+	{
+	MEAN: 0.08,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+39:
+	{
+	MEAN: 0.09,
+	MAX: 2,
+	MIN: 0,
+	LEN: 90
+	},
+40:
+	{
+	MEAN: 0.08,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+41:
+	{
+	MEAN: 0.06,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+TIME: 5.241352081298828
+}

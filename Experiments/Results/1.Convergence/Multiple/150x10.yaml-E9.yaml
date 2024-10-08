@@ -1,0 +1,360 @@
+{
+0:
+	{
+	MEAN: 5.27,
+	MAX: 8,
+	MIN: 2,
+	LEN: 49
+	},
+1:
+	{
+	MEAN: 4.29,
+	MAX: 7,
+	MIN: 2,
+	LEN: 34
+	},
+2:
+	{
+	MEAN: 2.98,
+	MAX: 6,
+	MIN: 1,
+	LEN: 86
+	},
+3:
+	{
+	MEAN: 2.41,
+	MAX: 5,
+	MIN: 0,
+	LEN: 82
+	},
+4:
+	{
+	MEAN: 2.24,
+	MAX: 5,
+	MIN: 0,
+	LEN: 100
+	},
+5:
+	{
+	MEAN: 2.06,
+	MAX: 5,
+	MIN: 0,
+	LEN: 98
+	},
+6:
+	{
+	MEAN: 2.0,
+	MAX: 4,
+	MIN: 0,
+	LEN: 67
+	},
+7:
+	{
+	MEAN: 1.99,
+	MAX: 5,
+	MIN: 0,
+	LEN: 100
+	},
+8:
+	{
+	MEAN: 1.87,
+	MAX: 4,
+	MIN: 0,
+	LEN: 92
+	},
+9:
+	{
+	MEAN: 1.84,
+	MAX: 4,
+	MIN: 0,
+	LEN: 100
+	},
+10:
+	{
+	MEAN: 1.38,
+	MAX: 4,
+	MIN: 0,
+	LEN: 98
+	},
+11:
+	{
+	MEAN: 1.46,
+	MAX: 4,
+	MIN: 0,
+	LEN: 71
+	},
+12:
+	{
+	MEAN: 1.47,
+	MAX: 4,
+	MIN: 0,
+	LEN: 99
+	},
+13:
+	{
+	MEAN: 1.32,
+	MAX: 4,
+	MIN: 0,
+	LEN: 91
+	},
+14:
+	{
+	MEAN: 1.4,
+	MAX: 4,
+	MIN: 0,
+	LEN: 100
+	},
+15:
+	{
+	MEAN: 1.34,
+	MAX: 4,
+	MIN: 0,
+	LEN: 97
+	},
+16:
+	{
+	MEAN: 1.18,
+	MAX: 4,
+	MIN: 0,
+	LEN: 72
+	},
+17:
+	{
+	MEAN: 1.19,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+18:
+	{
+	MEAN: 1.07,
+	MAX: 3,
+	MIN: 0,
+	LEN: 95
+	},
+19:
+	{
+	MEAN: 1.1,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+20:
+	{
+	MEAN: 1.02,
+	MAX: 3,
+	MIN: 0,
+	LEN: 99
+	},
+21:
+	{
+	MEAN: 0.92,
+	MAX: 3,
+	MIN: 0,
+	LEN: 76
+	},
+22:
+	{
+	MEAN: 0.86,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+23:
+	{
+	MEAN: 0.77,
+	MAX: 3,
+	MIN: 0,
+	LEN: 94
+	},
+24:
+	{
+	MEAN: 0.73,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+25:
+	{
+	MEAN: 0.66,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+26:
+	{
+	MEAN: 0.53,
+	MAX: 2,
+	MIN: 0,
+	LEN: 77
+	},
+27:
+	{
+	MEAN: 0.55,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+28:
+	{
+	MEAN: 0.51,
+	MAX: 2,
+	MIN: 0,
+	LEN: 95
+	},
+29:
+	{
+	MEAN: 0.49,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+30:
+	{
+	MEAN: 0.34,
+	MAX: 1,
+	MIN: 0,
+	LEN: 99
+	},
+31:
+	{
+	MEAN: 0.33,
+	MAX: 2,
+	MIN: 0,
+	LEN: 78
+	},
+32:
+	{
+	MEAN: 0.25,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+33:
+	{
+	MEAN: 0.31,
+	MAX: 3,
+	MIN: 0,
+	LEN: 94
+	},
+34:
+	{
+	MEAN: 0.2,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+35:
+	{
+	MEAN: 0.21,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+36:
+	{
+	MEAN: 0.27,
+	MAX: 3,
+	MIN: 0,
+	LEN: 78
+	},
+37:
+	{
+	MEAN: 0.16,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+38:
+	{
+	MEAN: 0.13,
+	MAX: 1,
+	MIN: 0,
+	LEN: 94
+	},
+39:
+	{
+	MEAN: 0.13,
+	MAX: 1,
+	MIN: 0,
+	LEN: 100
+	},
+40:
+	{
+	MEAN: 0.12,
+	MAX: 1,
+	MIN: 0,
+	LEN: 99
+	},
+41:
+	{
+	MEAN: 0.14,
+	MAX: 2,
+	MIN: 0,
+	LEN: 79
+	},
+42:
+	{
+	MEAN: 0.1,
+	MAX: 1,
+	MIN: 0,
+	LEN: 100
+	},
+43:
+	{
+	MEAN: 0.11,
+	MAX: 2,
+	MIN: 0,
+	LEN: 95
+	},
+44:
+	{
+	MEAN: 0.09,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+45:
+	{
+	MEAN: 0.07,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+46:
+	{
+	MEAN: 0.11,
+	MAX: 2,
+	MIN: 0,
+	LEN: 83
+	},
+47:
+	{
+	MEAN: 0.05,
+	MAX: 1,
+	MIN: 0,
+	LEN: 100
+	},
+48:
+	{
+	MEAN: 0.03,
+	MAX: 2,
+	MIN: 0,
+	LEN: 96
+	},
+49:
+	{
+	MEAN: 0.0,
+	MAX: 0,
+	MIN: 0,
+	LEN: 100
+	},
+50:
+	{
+	MEAN: 0.04,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+TIME: 7.152120351791382
+}

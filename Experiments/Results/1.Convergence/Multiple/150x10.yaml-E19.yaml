@@ -1,0 +1,465 @@
+{
+0:
+	{
+	MEAN: 5.32,
+	MAX: 7,
+	MIN: 3,
+	LEN: 41
+	},
+1:
+	{
+	MEAN: 5.34,
+	MAX: 8,
+	MIN: 3,
+	LEN: 64
+	},
+2:
+	{
+	MEAN: 4.43,
+	MAX: 7,
+	MIN: 3,
+	LEN: 99
+	},
+3:
+	{
+	MEAN: 4.19,
+	MAX: 7,
+	MIN: 2,
+	LEN: 90
+	},
+4:
+	{
+	MEAN: 3.91,
+	MAX: 6,
+	MIN: 2,
+	LEN: 100
+	},
+5:
+	{
+	MEAN: 3.35,
+	MAX: 6,
+	MIN: 0,
+	LEN: 97
+	},
+6:
+	{
+	MEAN: 3.12,
+	MAX: 5,
+	MIN: 0,
+	LEN: 67
+	},
+7:
+	{
+	MEAN: 3.02,
+	MAX: 5,
+	MIN: 0,
+	LEN: 100
+	},
+8:
+	{
+	MEAN: 2.88,
+	MAX: 4,
+	MIN: 0,
+	LEN: 91
+	},
+9:
+	{
+	MEAN: 2.29,
+	MAX: 4,
+	MIN: 0,
+	LEN: 100
+	},
+10:
+	{
+	MEAN: 2.22,
+	MAX: 4,
+	MIN: 0,
+	LEN: 98
+	},
+11:
+	{
+	MEAN: 2.08,
+	MAX: 4,
+	MIN: 0,
+	LEN: 63
+	},
+12:
+	{
+	MEAN: 1.89,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+13:
+	{
+	MEAN: 1.98,
+	MAX: 4,
+	MIN: 0,
+	LEN: 93
+	},
+14:
+	{
+	MEAN: 1.83,
+	MAX: 4,
+	MIN: 0,
+	LEN: 100
+	},
+15:
+	{
+	MEAN: 1.59,
+	MAX: 3,
+	MIN: 0,
+	LEN: 99
+	},
+16:
+	{
+	MEAN: 1.59,
+	MAX: 3,
+	MIN: 0,
+	LEN: 68
+	},
+17:
+	{
+	MEAN: 1.54,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+18:
+	{
+	MEAN: 1.29,
+	MAX: 4,
+	MIN: 0,
+	LEN: 92
+	},
+19:
+	{
+	MEAN: 1.21,
+	MAX: 3,
+	MIN: 0,
+	LEN: 100
+	},
+20:
+	{
+	MEAN: 1.08,
+	MAX: 3,
+	MIN: 0,
+	LEN: 97
+	},
+21:
+	{
+	MEAN: 1.05,
+	MAX: 2,
+	MIN: 0,
+	LEN: 66
+	},
+22:
+	{
+	MEAN: 0.92,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+23:
+	{
+	MEAN: 0.86,
+	MAX: 3,
+	MIN: 0,
+	LEN: 93
+	},
+24:
+	{
+	MEAN: 0.8,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+25:
+	{
+	MEAN: 0.73,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+26:
+	{
+	MEAN: 0.77,
+	MAX: 4,
+	MIN: 0,
+	LEN: 81
+	},
+27:
+	{
+	MEAN: 0.62,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+28:
+	{
+	MEAN: 0.61,
+	MAX: 2,
+	MIN: 0,
+	LEN: 95
+	},
+29:
+	{
+	MEAN: 0.62,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+30:
+	{
+	MEAN: 0.58,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+31:
+	{
+	MEAN: 0.62,
+	MAX: 3,
+	MIN: 0,
+	LEN: 85
+	},
+32:
+	{
+	MEAN: 0.55,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+33:
+	{
+	MEAN: 0.55,
+	MAX: 2,
+	MIN: 0,
+	LEN: 95
+	},
+34:
+	{
+	MEAN: 0.55,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+35:
+	{
+	MEAN: 0.42,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+36:
+	{
+	MEAN: 0.46,
+	MAX: 2,
+	MIN: 0,
+	LEN: 71
+	},
+37:
+	{
+	MEAN: 0.41,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+38:
+	{
+	MEAN: 0.35,
+	MAX: 2,
+	MIN: 0,
+	LEN: 94
+	},
+39:
+	{
+	MEAN: 0.33,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+40:
+	{
+	MEAN: 0.35,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+41:
+	{
+	MEAN: 0.29,
+	MAX: 2,
+	MIN: 0,
+	LEN: 78
+	},
+42:
+	{
+	MEAN: 0.27,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+43:
+	{
+	MEAN: 0.19,
+	MAX: 2,
+	MIN: 0,
+	LEN: 94
+	},
+44:
+	{
+	MEAN: 0.17,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+45:
+	{
+	MEAN: 0.25,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+46:
+	{
+	MEAN: 0.21,
+	MAX: 2,
+	MIN: 0,
+	LEN: 80
+	},
+47:
+	{
+	MEAN: 0.13,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+48:
+	{
+	MEAN: 0.18,
+	MAX: 2,
+	MIN: 0,
+	LEN: 95
+	},
+49:
+	{
+	MEAN: 0.16,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+50:
+	{
+	MEAN: 0.18,
+	MAX: 2,
+	MIN: 0,
+	LEN: 99
+	},
+51:
+	{
+	MEAN: 0.25,
+	MAX: 2,
+	MIN: 0,
+	LEN: 87
+	},
+52:
+	{
+	MEAN: 0.2,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+53:
+	{
+	MEAN: 0.19,
+	MAX: 2,
+	MIN: 0,
+	LEN: 97
+	},
+54:
+	{
+	MEAN: 0.22,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+55:
+	{
+	MEAN: 0.14,
+	MAX: 1,
+	MIN: 0,
+	LEN: 99
+	},
+56:
+	{
+	MEAN: 0.14,
+	MAX: 2,
+	MIN: 0,
+	LEN: 85
+	},
+57:
+	{
+	MEAN: 0.15,
+	MAX: 2,
+	MIN: 0,
+	LEN: 100
+	},
+58:
+	{
+	MEAN: 0.06,
+	MAX: 1,
+	MIN: 0,
+	LEN: 96
+	},
+59:
+	{
+	MEAN: 0.05,
+	MAX: 1,
+	MIN: 0,
+	LEN: 100
+	},
+60:
+	{
+	MEAN: 0.01,
+	MAX: 1,
+	MIN: 0,
+	LEN: 99
+	},
+61:
+	{
+	MEAN: 0.01,
+	MAX: 1,
+	MIN: 0,
+	LEN: 86
+	},
+62:
+	{
+	MEAN: 0.01,
+	MAX: 1,
+	MIN: 0,
+	LEN: 100
+	},
+63:
+	{
+	MEAN: 0.01,
+	MAX: 1,
+	MIN: 0,
+	LEN: 99
+	},
+64:
+	{
+	MEAN: 0.01,
+	MAX: 1,
+	MIN: 0,
+	LEN: 100
+	},
+65:
+	{
+	MEAN: 0.01,
+	MAX: 1,
+	MIN: 0,
+	LEN: 100
+	},
+TIME: 9.359970331192017
+}
